@@ -72,7 +72,7 @@
 
 
        LINKAGE SECTION.
-      *
+      * testing change
        COPY EPSNBRP2.
 
        PROCEDURE DIVISION USING EPS-NUMBER-VALIDATION.
