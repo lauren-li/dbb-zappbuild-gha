@@ -1,0 +1,12 @@
+{
+    "zopeneditor.propertygroups": [
+        {
+            "language": "cobol",
+            "name": "my-local",
+            "syslib": [
+                "**/copybook/**"
+            ],
+            "type": "local"
+        }
+    ]
+}
