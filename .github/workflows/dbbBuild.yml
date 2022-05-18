@@ -21,7 +21,7 @@ jobs:
       # Project related vars
       MyRepo: git@github.com:${{ github.repository }}.git
       MyWorkDir: tmp/ghActions/ghAction-poc-workspace_run_${{ github.run_number }}
-      MyWorkSpace: ghAction-poc-workspace
+      MyWorkSpace: dbb-zappbuild
       MyBranch: ${{ github.ref }}
       
     steps:
