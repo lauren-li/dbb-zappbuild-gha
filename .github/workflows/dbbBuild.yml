@@ -7,6 +7,8 @@ env:
   # a var with a valid SSH acct on Z. With pre-gen'd and tested keys in the runner.  
   DBB_Host: 'ssh laurenl@10.3.20.201'
   # scripts on z/OS (SSH user's Home Dir in Unix - USS). See SSH scripting Doc
+  # HERE
+  Echo: 'ibm/echo.sh'
   Clone: 'ibm/git-clone.sh'
   DBB_Build: 'ibm/dbb-build.sh'
 
@@ -25,6 +27,9 @@ jobs:
       MyBranch: ${{ github.ref }}
       
     steps:
+      - name: Echo
+        run: ${{ env.DBB_Host }} ${{ env.Echo }}
+        
       - name: Clone
         run: ${{ env.DBB_Host }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}
     
