@@ -33,7 +33,7 @@ jobs:
         
     steps:
       - name: Echo
-        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Echo }}" ${{ env.Zowe_RSE_WorkDir}}
+        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Echo }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
         
       - name: Clone
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
