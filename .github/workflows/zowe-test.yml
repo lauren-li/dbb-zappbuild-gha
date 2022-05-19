@@ -4,15 +4,15 @@ name: zowe-test
 # Global vars
 env:
   # a var with a valid SSH acct on Z. With pre-gen'd and tested keys in the runner.
-  DBB_Host: 'ssh laurenl@10.3.20.201'
+  # DBB_Host: 'ssh laurenl@10.3.20.201'
   Zowe_RSE_Prefix: 'zowe rse issue uss'
   Zowe_RSE_WorkDir: '--cwd "/u/laurenl"'
   
   # scripts on z/OS (SSH user's Home Dir in Unix - USS). See SSH scripting Doc
   # HERE
-  Echo: '"ibm/echo.sh"'
+  Echo: 'ibm/echo.sh'
   Clone: 'ibm/git-clone-https.sh'
-  DBB_Build: '"ibm/dbb-build.sh"'
+  DBB_Build: 'ibm/dbb-build.sh'
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
@@ -31,11 +31,14 @@ jobs:
         
     steps:
       - name: Echo
-        run: ${{ env.Zowe_RSE_Prefix }} ${{ env.Echo }} ${{ env.Zowe_RSE_WorkDir}}
+        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Echo }}" ${{ env.Zowe_RSE_WorkDir}}
         
       - name: Clone
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" ${{ env.Zowe_RSE_WorkDir}}
 #        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" ${{ env.Zowe_RSE_WorkDir}}
-    
+
 #       - name: DBB_Impact_Build
-#         run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild
+#         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild" ${{ env.Zowe_RSE_WorkDir}}
+
+      - name: DBB_Full_Build
+        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --fullBuild" ${{ env.Zowe_RSE_WorkDir}}
