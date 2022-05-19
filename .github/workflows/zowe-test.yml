@@ -26,7 +26,7 @@ jobs:
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}
       MyWorkSpace: dbb-zappbuild-gha
       MyBranch: ${{ github.ref }}
-      Zowe_RSE_WorkDir: '--cwd "/u/laurenl${{ env.MyWorkDir }}"'
+      Zowe_RSE_WorkDir: '--cwd "/u/laurenl${{ MyWorkDir }}"'
         
     steps:
       - name: Echo
