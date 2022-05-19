@@ -6,6 +6,7 @@ env:
   # a var with a valid SSH acct on Z. With pre-gen'd and tested keys in the runner.
   DBB_Host: 'ssh laurenl@10.3.20.201'
   Zowe_RSE_Prefix: 'zowe rse issue uss'
+  Zowe_RSE_WorkDir: '--cwd "/u/laurenl"'
   
   # scripts on z/OS (SSH user's Home Dir in Unix - USS). See SSH scripting Doc
   # HERE
@@ -26,7 +27,6 @@ jobs:
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}
       MyWorkSpace: dbb-zappbuild-gha
       MyBranch: ${{ github.ref }}
-      Zowe_RSE_WorkDir: '--cwd "/u/laurenl${{ MyWorkDir }}"'
         
     steps:
       - name: Echo
