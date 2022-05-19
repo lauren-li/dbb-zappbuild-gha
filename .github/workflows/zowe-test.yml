@@ -25,15 +25,15 @@ jobs:
       # Project related vars
       MyRepo: git@github.com:${{ github.repository }}.git
       MyWorkDir: tmp/ghActions/ghAction-poc-workspace_run_${{ github.run_number }}
-      MyWorkSpace: dbb-zappbuild
+      MyWorkSpace: dbb-zappbuild-gha
       MyBranch: ${{ github.ref }}
       
     steps:
       - name: Echo
         run: ${{ env.Zowe_RSE_Prefix }} ${{ env.Echo }} ${{ env.Zowe_RSE_WorkDir}}
         
-#       - name: Clone
-#         run: ${{ env.DBB_Host }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}
+      - name: Clone
+        run: ${{ env.DBB_Host }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}
     
 #       - name: DBB_Impact_Build
 #         run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild
