@@ -34,7 +34,7 @@ jobs:
         run: ${{ env.Zowe_RSE_Prefix }} ${{ env.Echo }} ${{ env.Zowe_RSE_WorkDir}}
         
       - name: Clone
-        run: ${{ env.Zowe_RSE_Prefix }} "cd testdir;git config --global http.sslVerify false;git clone https://github.com/lauren-li/dbb-zappbuild-gha.git;git config --global http.sslVerify true" ${{ env.Zowe_RSE_WorkDir}}
+        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" ${{ env.Zowe_RSE_WorkDir}}
 #        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" ${{ env.Zowe_RSE_WorkDir}}
     
 #       - name: DBB_Impact_Build
