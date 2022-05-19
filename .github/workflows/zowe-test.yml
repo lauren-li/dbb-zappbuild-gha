@@ -28,6 +28,7 @@ jobs:
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}
       MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples
       MyApplication: MortgageApplication
+      MyHlq: LAURENL.ZAPP.CLEAN.MASTER
       MyBranch: ${{ github.ref }}
         
     steps:
@@ -36,10 +37,9 @@ jobs:
         
       - name: Clone
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" ${{ env.Zowe_RSE_WorkDir}}
-#        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" ${{ env.Zowe_RSE_WorkDir}}
 
 #       - name: DBB_Impact_Build
 #         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild" ${{ env.Zowe_RSE_WorkDir}}
 
       - name: DBB_Full_Build
-        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} --fullBuild" ${{ env.Zowe_RSE_WorkDir}}
+        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" ${{ env.Zowe_RSE_WorkDir}}
