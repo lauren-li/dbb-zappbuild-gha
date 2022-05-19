@@ -12,7 +12,7 @@ env:
   # HERE
   Echo: 'ibm/echo.sh'
   Clone: 'ibm/git-clone-https.sh'
-  DBB_Build: 'ibm/dbb-build.sh'
+  DBB_Build: 'ibm/dbb-build-test.sh'
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
