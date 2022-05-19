@@ -11,7 +11,7 @@ env:
   # scripts on z/OS (SSH user's Home Dir in Unix - USS). See SSH scripting Doc
   # HERE
   Echo: '"ibm/echo.sh"'
-  Clone: 'ibm/git-clone.sh'
+  Clone: 'ibm/git-clone-https.sh'
   DBB_Build: '"ibm/dbb-build.sh"'
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
