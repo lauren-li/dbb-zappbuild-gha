@@ -6,7 +6,7 @@ env:
   # a var with a valid SSH acct on Z. With pre-gen'd and tested keys in the runner.
   # DBB_Host: 'ssh laurenl@10.3.20.201'
   Zowe_RSE_Prefix: 'zowe rse issue uss'
-  Zowe_RSE_WorkDir: '--cwd "/u/laurenl"'
+  Zowe_RSE_WorkDir: '/u/laurenl'
   
   # scripts on z/OS (SSH user's Home Dir in Unix - USS). See SSH scripting Doc
   # HERE
@@ -36,10 +36,10 @@ jobs:
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Echo }}" ${{ env.Zowe_RSE_WorkDir}}
         
       - name: Clone
-        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" ${{ env.Zowe_RSE_WorkDir}}
+        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd ${{ env.Zowe_RSE_WorkDir}}
 
 #       - name: DBB_Impact_Build
-#         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild" ${{ env.Zowe_RSE_WorkDir}}
+#         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild" --cwd ${{ env.Zowe_RSE_WorkDir}}
 
       - name: DBB_Full_Build
-        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" ${{ env.Zowe_RSE_WorkDir}}
+        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd ${{ env.Zowe_RSE_WorkDir}}
