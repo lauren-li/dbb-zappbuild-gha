@@ -34,7 +34,7 @@ jobs:
         run: ${{ env.Zowe_RSE_Prefix }} ${{ env.Echo }} ${{ env.Zowe_RSE_WorkDir}}
         
       - name: Clone
-        run: ${{ env.Zowe_RSE_Prefix }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }} ${{ env.Zowe_RSE_WorkDir}}
+        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" ${{ env.Zowe_RSE_WorkDir}}
     
 #       - name: DBB_Impact_Build
 #         run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild
