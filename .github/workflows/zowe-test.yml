@@ -26,7 +26,7 @@ jobs:
       # MyRepo: git@github.com:${{ github.repository }}.git
       MyRepo: https://github.com/lauren-li/dbb-zappbuild-gha.git
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}
-      MyWorkSpace: dbb-zappbuild-gha/samples
+      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples
       MyApplication: MortgageApplication
       MyBranch: ${{ github.ref }}
         
