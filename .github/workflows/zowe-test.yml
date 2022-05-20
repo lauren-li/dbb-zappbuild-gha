@@ -4,7 +4,6 @@ name: zowe-test
 # Global vars
 env:
   # a var with a valid SSH acct on Z. With pre-gen'd and tested keys in the runner.
-  # DBB_Host: 'ssh laurenl@10.3.20.201'
   Zowe_RSE_Prefix: 'zowe rse issue uss'
   Zowe_RSE_WorkDir: '/u/laurenl'
   
@@ -23,7 +22,6 @@ jobs:
     runs-on: self-hosted
     env:
       # Project related vars
-      # MyRepoGit: git@github.com:${{ github.repository }}.git
       MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}
       MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples
@@ -39,7 +37,7 @@ jobs:
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
 
 #       - name: DBB_Impact_Build
-#         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
+#         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
 
       - name: DBB_Full_Build
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
