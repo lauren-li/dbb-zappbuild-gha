@@ -23,7 +23,7 @@ jobs:
     runs-on: self-hosted
     env:
       # Project related vars
-      # MyRepo: git@github.com:${{ github.repository }}.git
+      MyGHRepo: git@github.com:${{ github.repository }}.git
       MyRepo: https://github.com/lauren-li/dbb-zappbuild-gha.git
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}
       MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples
@@ -33,7 +33,7 @@ jobs:
         
     steps:
       - name: Echo
-        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Echo }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
+        run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Echo }} ${{ env.MyGHRepo }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
         
       - name: Clone
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
