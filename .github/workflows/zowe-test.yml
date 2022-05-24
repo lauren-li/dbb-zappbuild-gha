@@ -41,3 +41,6 @@ jobs:
 
       - name: DBB_Full_Build
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
+
+      - name: Download_Logs
+        run: zowe rse dl uf "${{ env.MyWorkDir }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
