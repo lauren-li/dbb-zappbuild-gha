@@ -44,4 +44,4 @@ jobs:
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
 
       - name: Download_Logs
-        run: ${{ env.Download_Logs }} ${{ env.MyWorkDir }}
+        run: ${{ env.Download_Logs }} ${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}
