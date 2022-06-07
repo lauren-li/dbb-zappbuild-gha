@@ -58,7 +58,7 @@ jobs:
         
       - id: download_logs
         name: Download Logs
-        run: echo "${{ steps.prepare_logs.outputs.buildLogsLocation }}"
+#         run: echo "${{ steps.prepare_logs.outputs.buildLogsLocation }}"
 
 #         run: echo "${{ needs.DBB_Build_on_zOS.outputs.buildLogsLocation }}"
-#         run: zowe rse download uss-file "${{ env.MyWorkDir }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
+        run: zowe rse download uss-file "${{ steps.prepare_logs.outputs.buildLogsLocation }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
