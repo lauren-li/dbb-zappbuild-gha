@@ -51,7 +51,7 @@ jobs:
 
       - id: prepare_logs
         name: Prepare Logs
-        run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.Prepare_Logs }}' --cwd '${{ env.Zowe_RSE_WorkDir}}')"
+        run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_WorkDir}}')"
         
       - id: download_logs
         name: Download Logs
