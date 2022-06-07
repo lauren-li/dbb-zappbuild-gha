@@ -22,9 +22,9 @@ on: workflow_dispatch
 jobs:
   DBB_Build_on_zOS:
     runs-on: self-hosted
-    outputs:
+#     outputs:
 #       buildLogsLocation: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
-      buildLogsLocation: test
+#       buildLogsLocation: test
 
     env:
       # Project related vars
@@ -52,12 +52,14 @@ jobs:
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
 
       - id: prepare_logs
-        name: Prepare Logs
-        run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_WorkDir}}')"
+        name: Prepare Logs     
+        run: echo "::set-output name=buildLogsLocation::test"
+
+#         run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_WorkDir}}')"
         
       - id: download_logs
         name: Download Logs
-        run: echo "${{ steps.outputs.buildLogsLocation }}"
+        run: echo "${{ steps.prepare_logs.outputs.buildLogsLocation }}"
 
 #         run: echo "${{ needs.DBB_Build_on_zOS.outputs.buildLogsLocation }}"
 #         run: zowe rse download uss-file "${{ env.MyWorkDir }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
