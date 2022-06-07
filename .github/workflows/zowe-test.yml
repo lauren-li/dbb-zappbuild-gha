@@ -12,6 +12,7 @@ env:
   Echo: 'ibm/echo.sh'
   Clone: 'ibm/git-clone-https.sh'
   DBB_Build: 'ibm/dbb-build-test.sh'
+  Prepare_Logs: 'ibm/prepare-logs.sh'
   Download_Logs: 'ibm/download-logs.sh'
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
@@ -50,7 +51,7 @@ jobs:
 
       - id: prepare_logs
         name: Prepare Logs
-        run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_WorkDir}}')"
+        run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.Prepare_Logs }}' --cwd '${{ env.Zowe_RSE_WorkDir}}')"
         
       - id: download_logs
         name: Download Logs
