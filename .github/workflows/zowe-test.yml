@@ -21,6 +21,8 @@ on: workflow_dispatch
 jobs:
   DBB_Build_on_zOS:
     runs-on: self-hosted
+    outputs:
+      buildLogsLocation: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
     env:
       # Project related vars
       MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git
@@ -32,17 +34,25 @@ jobs:
       MyBranch: ${{ github.ref }}
         
     steps:
-      - name: Echo
+      - name: echo
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
         
-      - name: Clone
+      - id: clone
+        name: Clone repository
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
 
 #       - name: DBB_Impact_Build
 #         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
 
-      - name: DBB_Full_Build
+      - id: dbb_full_build
+        name: DBB Full Build
         run: ${{ env.Zowe_RSE_Prefix }} "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
 
-      - name: Download_Logs
-        run: zowe rse download uss-file "${{ env.MyWorkDir }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
+      - id: prepare_logs
+        name: Prepare Logs
+        run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_WorkDir}}')"
+        
+      - id: download_logs
+        name: Download Logs
+        run: echo ${{ DBB_Build_on_zOS.outputs.buildLogsLocation }}
+#         run: zowe rse download uss-file "${{ env.MyWorkDir }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
