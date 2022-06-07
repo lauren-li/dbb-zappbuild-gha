@@ -23,7 +23,9 @@ jobs:
   DBB_Build_on_zOS:
     runs-on: self-hosted
     outputs:
-      buildLogsLocation: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+#       buildLogsLocation: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+      buildLogsLocation: test
+
     env:
       # Project related vars
       MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git
