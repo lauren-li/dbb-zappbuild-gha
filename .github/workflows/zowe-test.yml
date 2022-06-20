@@ -48,4 +48,4 @@ jobs:
         
       - id: download_logs
         name: Download Logs
-        run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+        run: zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
