@@ -7,7 +7,6 @@ env:
   Zowe_RSE_WorkDir: '/u/laurenl'
   
   # scripts on z/OS (SSH user's Home Dir in Unix - USS). See SSH scripting Doc
-  Echo: 'ibm/echo.sh'
   Clone: 'ibm/git-clone-https.sh'
   DBB_Build: 'ibm/dbb-build-test.sh'
   Prepare_Logs: 'ibm/prepare-logs.sh'
@@ -31,10 +30,7 @@ jobs:
       MyHlq: LAURENL.ZAPP.CLEAN.MASTER
       MyBranch: ${{ github.ref }}
         
-    steps:
-      - name: echo
-        run: zowe rse issue uss "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
-        
+    steps:  
       - id: clone
         name: Clone repository
         run: zowe rse issue uss "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
