@@ -1,15 +1,17 @@
-name: zowe-test
+name: Demo-DBB_Build_on_ZOS_with_GitHub_Actions_Zowe_and_RSE_API
 ## Notes:
 # A sample zOS DBB workflow
 # Global vars
 env:
-  # a var with a valid SSH acct on Z. With pre-gen'd and tested keys in the runner.
-  Zowe_RSE_WorkDir: '/u/laurenl'
+  # Zowe connection information
+  Zowe_RSE_ProfileName: ''                  # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
+  Zowe_RSE_CommandWorkingDir: '/u/laurenl'  # Command working directory - The Unix System Services (USS) directory from which to issue commands.
+                                            #                             This could be the RSE profile user's home directory. 
   
-  # scripts on z/OS (SSH user's Home Dir in Unix - USS). See SSH scripting Doc
-  Clone: 'ibm/git-clone-https.sh'
-  DBB_Build: 'ibm/dbb-build-test.sh'
-  Prepare_Logs: 'ibm/prepare-logs.sh'
+  # Pipeline scripts on z/OS (relative to the Zowe RSE user's Home Dir in Unix - USS).
+  Clone: 'ibm/git-clone-https.sh'           # Script to clone the code from GitHub to z/OS
+  DBB_Build: 'ibm/dbb-build-test.sh'        # Script to perform the DBB build on z/OS
+  Prepare_Logs: 'ibm/prepare-logs.sh'       # Script to gather build log files into a single archive file
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
@@ -20,13 +22,13 @@ jobs:
     runs-on: self-hosted
 
     env:
-      # Project related vars
-      MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git
-      MyBranch: ${{ github.ref }}
-      MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}
-      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples
-      MyApplication: MortgageApplication
-      MyHlq: LAURENL.ZAPP.CLEAN.MASTER
+      # Project related variables. GHA automatically fills in relevant repository information for values enclosed in ${{...}}.
+      MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git      # Source code repository URL (HTTPS)
+      MyBranch: ${{ github.ref }}                                             # Branch to run the GHA pipeline on
+      MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }} # Absolute path to directory for storing the clone and build outputs
+      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples                       # Absolute path to workspace (root) directory containing all required source directories
+      MyApplication: MortgageApplication                                      # Application directory name (relative to MyWorkSpace)
+      MyHlq: LAURENL.ZAPP.CLEAN.MASTER                                        # High level qualifier for partitioned data sets
         
     steps:  
       - id: clone
