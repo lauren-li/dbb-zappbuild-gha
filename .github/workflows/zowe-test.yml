@@ -8,7 +8,6 @@ env:
   Zowe_RSE_WorkDir: '/u/laurenl'
   
   # scripts on z/OS (SSH user's Home Dir in Unix - USS). See SSH scripting Doc
-  # HERE
   Echo: 'ibm/echo.sh'
   Clone: 'ibm/git-clone-https.sh'
   DBB_Build: 'ibm/dbb-build-test.sh'
@@ -22,9 +21,6 @@ on: workflow_dispatch
 jobs:
   DBB_Build_on_zOS:
     runs-on: self-hosted
-#     outputs:
-#       buildLogsLocation: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
-#       buildLogsLocation: test
 
     env:
       # Project related vars
@@ -53,12 +49,8 @@ jobs:
 
       - id: prepare_logs
         name: Prepare Logs     
-#         run: echo "::set-output name=buildLogsLocation::test"
         run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_WorkDir}}')"
         
       - id: download_logs
         name: Download Logs
-#         run: echo "${{ steps.prepare_logs.outputs.buildLogsLocation }}"
-
-#         run: echo "${{ needs.DBB_Build_on_zOS.outputs.buildLogsLocation }}"
         run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
