@@ -33,18 +33,18 @@ jobs:
     steps:  
       - id: clone
         name: Clone repository
-        run: zowe rse issue uss "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_WorkDir}}"
+        run: zowe rse issue uss "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
 #       - name: DBB_Impact_Build
-#         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
+#         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - id: dbb_full_build
         name: DBB Full Build
-        run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_WorkDir}}"
+        run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - id: prepare_logs
         name: Prepare Logs     
-        run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_WorkDir}}')"
+        run: echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')"
         
       - id: download_logs
         name: Download Logs
