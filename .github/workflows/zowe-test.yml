@@ -23,12 +23,11 @@ jobs:
     env:
       # Project related vars
       MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git
+      MyBranch: ${{ github.ref }}
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}
-      createBuildOutputSubfolder: true # build.properties property Default: true
       MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples
       MyApplication: MortgageApplication
       MyHlq: LAURENL.ZAPP.CLEAN.MASTER
-      MyBranch: ${{ github.ref }}
         
     steps:  
       - id: clone
