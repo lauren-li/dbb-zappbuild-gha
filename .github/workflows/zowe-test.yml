@@ -4,7 +4,7 @@ name: Demo-DBB_Build_on_ZOS_with_GitHub_Actions_Zowe_and_RSE_API
 # Global vars
 env:
   # Zowe connection information
-  Zowe_RSE_ProfileName: ''                  # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
+  Zowe_RSE_ProfileName: 'rseProfile'        # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
   Zowe_RSE_CommandWorkingDir: '/u/laurenl'  # Command working directory - The Unix System Services (USS) directory from which to issue commands.
                                             #                             This could be the RSE profile user's home directory. 
   
@@ -36,13 +36,15 @@ jobs:
         run: >
              zowe rse issue uss "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}"
              --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
+             --rse-p "${{ env.Zowe_RSE_ProfileName }}"
 
 #       - name: DBB_Impact_Build
 #         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
 
       - name: DBB Full Build
         id: dbb_full_build
-        run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
+        run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild"
+             --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
 
       - name: Prepare Logs
         id: prepare_logs     
