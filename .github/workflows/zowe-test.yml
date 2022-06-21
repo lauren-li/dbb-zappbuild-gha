@@ -5,7 +5,7 @@ name: Demo-DBB_Build_on_ZOS_with_GitHub_Actions_Zowe_and_RSE_API
 env:
   # Zowe connection information
   Zowe_RSE_ProfileName: 'myRseProfile'     # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
-  Zowe_RSE_CommandWorkingDir: '/u/laurenl' # Command working directory - The Unix System Services (USS) directory from which to issue commands.
+  Zowe_RSE_CommandWorkingDir: '/u/laurenl' # Current working directory - The Unix System Services (USS) directory from which to issue commands.
                                            #                             This could be the RSE profile user's home directory. 
   
   # Paths to pipeline scripts on z/OS (relative to the RSE profile user's Home Dir in USS)
