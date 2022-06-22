@@ -55,8 +55,15 @@ jobs:
           --cwd '${{ env.Zowe_RSE_CommandWorkingDir }}'
           --rse-p "${{ env.Zowe_RSE_ProfileName }}")"
   
-      - name: Download Logs
+      - name: Download Logs to GHA runner
         id: download_logs
         run: >
           zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
-          --rse-p "${{ env.Zowe_RSE_ProfileName }}"      
+          --rse-p "${{ env.Zowe_RSE_ProfileName }}"
+      
+      - name: Upload Logs to GitHub
+        id: upload_logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: dbb-Build-Logs
+          path: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
