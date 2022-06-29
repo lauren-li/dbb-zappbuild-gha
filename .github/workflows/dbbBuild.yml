@@ -9,7 +9,7 @@ env:
 
   # Pipeline scripts on z/OS (relative to the SSH user's Home Dir in USS)
   Clone: 'ibm/git-clone.sh'           # Script to clone the code from GitHub to z/OS
-  DBB_Build: 'ibm/dbb-build.sh'       # Script to perform the DBB build on z/OS
+  DBB_Build: 'All-pipeline-scripts/dbb-build.sh'       # Script to perform the DBB build on z/OS
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
@@ -20,14 +20,19 @@ jobs:
     runs-on: self-hosted
     env:
       # Project related variables. GHA automatically fills in relevant repository information for values enclosed in ${{ ... }}.
-      MyRepo: git@github.com:${{ github.repository }}.git
-      MyBranch: ${{ github.ref }}
+      MyRepo: git@github.com:${{ github.repository }}.git. # Source code repository URL (SSH)
+      MyBranch: ${{ github.ref }} # Branch on which to run the GHA pipeline
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha-ssh_run_${{ github.run_number }}
       MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples
+      MyApplication: MortgageApplication
+      MyHlq: LAURENL.SSH
       
     steps:
-      - name: Clone
+      - name: Clone repository
         run: ${{ env.DBB_Host }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}
     
-      - name: DBB_Impact_Build
-        run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} MortgageApplication --impactBuild
+#       - name: DBB Impact Build
+#         run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild
+
+      - name: DBB Full Build
+        run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild
