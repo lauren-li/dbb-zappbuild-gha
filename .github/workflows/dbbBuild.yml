@@ -24,7 +24,7 @@ jobs:
       MyRepo: git@github.com:${{ github.repository }}.git
       MyBranch: ${{ github.ref }}
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha-ssh_run_${{ github.run_number }}
-      MyWorkSpace: dbb-zappbuild
+      MyWorkSpace: /u/laurenl/dbb-zappbuild
       
     steps:
       - name: Echo
