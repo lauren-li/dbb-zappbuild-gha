@@ -22,9 +22,9 @@ jobs:
     env:
       # Project related vars
       MyRepo: git@github.com:${{ github.repository }}.git
-      MyWorkDir: tmp/ghActions/ghAction-poc-workspace_run_${{ github.run_number }}
-      MyWorkSpace: dbb-zappbuild
       MyBranch: ${{ github.ref }}
+      MyWorkDir: tmp/ghActions/dbb-zappbuild-gha-ssh_run_${{ github.run_number }}
+      MyWorkSpace: dbb-zappbuild
       
     steps:
       - name: Echo
@@ -34,4 +34,4 @@ jobs:
         run: ${{ env.DBB_Host }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}
     
       - name: DBB_Impact_Build
-        run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild
+        run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} MortgageApplication --impactBuild
