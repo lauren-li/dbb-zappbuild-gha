@@ -1,16 +1,15 @@
-name: Demo-DBB_Build_on_ZOS_With_GitHub_Actions
+name: Demo-DBB_Build_on_ZOS_With_GitHub_Actions_SSH
 ## Notes:
-# A sample zOS DBB workflow
+# A sample z/OS DBB workflow using GitHub Actions (GHA) with SSH connection
 
 # Global vars
 env:
-  # a var with a valid SSH acct on Z. With pre-gen'd and tested keys in the runner.  
-  DBB_Host: 'ssh laurenl@10.3.20.201'
-  # scripts on z/OS (SSH user's Home Dir in Unix - USS). See SSH scripting Doc
-  # HERE
-  Echo: 'ibm/echo.sh'
-  Clone: 'ibm/git-clone.sh'
-  DBB_Build: 'ibm/dbb-build.sh'
+  # SSH connection information
+  DBB_Host: 'ssh laurenl@10.3.20.201' # A valid SSH acct on Z. With pre-gen'd and tested keys in the runner.
+
+  # Pipeline scripts on z/OS (relative to the SSH user's Home Dir in USS)
+  Clone: 'ibm/git-clone.sh'           # Script to clone the code from GitHub to z/OS
+  DBB_Build: 'ibm/dbb-build.sh'       # Script to perform the DBB build on z/OS
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
@@ -20,16 +19,13 @@ jobs:
   DBB_Build_on_zOS:
     runs-on: self-hosted
     env:
-      # Project related vars
+      # Project related variables. GHA automatically fills in relevant repository information for values enclosed in ${{ ... }}.
       MyRepo: git@github.com:${{ github.repository }}.git
       MyBranch: ${{ github.ref }}
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha-ssh_run_${{ github.run_number }}
       MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples
       
     steps:
-      - name: Echo
-        run: ${{ env.DBB_Host }} ${{ env.Echo }}
-        
       - name: Clone
         run: ${{ env.DBB_Host }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}
     
