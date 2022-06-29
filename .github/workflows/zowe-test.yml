@@ -10,7 +10,7 @@ env:
   
   # Paths to pipeline scripts on z/OS (relative to the RSE profile user's Home Dir in USS)
   Clone: 'All-pipeline-scripts/git-clone-https.sh'       # Script to clone the code from GitHub to z/OS
-  DBB_Build: 'All-pipeline-scripts/dbb-build-non-ssh.sh' # Script to perform the DBB build on z/OS
+  DBB_Build: 'All-pipeline-scripts/dbb-build.sh'         # Script to perform the DBB build on z/OS
   Prepare_Logs: 'All-pipeline-scripts/prepare-logs.sh'   # Script to gather build log files into a single archive file
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
@@ -24,7 +24,7 @@ jobs:
     env:
       # Project related variables. GHA automatically fills in relevant repository information for values enclosed in ${{ ... }}.
       MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git      # Source code repository URL (HTTPS)
-      MyBranch: ${{ github.ref }}                                             # Branch to run the GHA pipeline on
+      MyBranch: ${{ github.ref }}                                             # Branch on which to run the GHA pipeline
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }} # Absolute path to directory for storing the clone and build outputs
       MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples                       # Absolute path to workspace (root) directory containing all required source directories
       MyApplication: MortgageApplication                                      # Application directory name (relative to MyWorkSpace)
