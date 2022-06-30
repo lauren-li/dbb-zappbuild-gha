@@ -32,7 +32,6 @@ jobs:
         
     steps:  
       - name: Clone repository
-        id: clone
         run: >
           zowe rse issue uss "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}"
           --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
@@ -42,28 +41,7 @@ jobs:
 #         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
 
       - name: DBB Full Build
-        id: dbb_full_build
         run: >
           zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild"
           --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
           --rse-p "${{ env.Zowe_RSE_ProfileName }}"
-
-      - name: Prepare Logs
-        id: prepare_logs     
-        run: >
-          echo "::set-output name=buildLogsLocation::$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}'
-          --cwd '${{ env.Zowe_RSE_CommandWorkingDir }}'
-          --rse-p "${{ env.Zowe_RSE_ProfileName }}")"
-  
-      - name: Download Logs to GHA runner
-        id: download_logs
-        run: >
-          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
-          --rse-p "${{ env.Zowe_RSE_ProfileName }}"
-      
-      - name: Upload Logs to GitHub
-        id: upload_logs
-        uses: actions/upload-artifact@v3
-        with:
-          name: dbb-build-logs
-          path: ${{ env.Zowe_RSE_CommandWorkingDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}
