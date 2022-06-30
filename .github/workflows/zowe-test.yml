@@ -37,8 +37,8 @@ jobs:
           --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
           --rse-p "${{ env.Zowe_RSE_ProfileName }}"
 
-#       - name: DBB_Impact_Build
-#         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
+      - name: DBB_Impact_Build
+        run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
 
       - name: DBB Full Build
         run: >
