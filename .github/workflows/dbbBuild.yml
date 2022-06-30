@@ -20,19 +20,19 @@ jobs:
     runs-on: self-hosted
     env:
       # Project related variables. GHA automatically fills in relevant repository information for values enclosed in ${{ ... }}.
-      MyRepo: git@github.com:${{ github.repository }}.git # Source code repository URL (SSH)
-      MyBranch: ${{ github.ref }} # Branch on which to run the GHA pipeline
-      MyWorkDir: tmp/ghActions/dbb-zappbuild-gha-ssh_run_${{ github.run_number }}
-      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples
-      MyApplication: MortgageApplication
-      MyHlq: LAURENL.SSH
+      MyRepo: git@github.com:${{ github.repository }}.git                         # Source code repository URL (SSH)
+      MyBranch: ${{ github.ref }}                                                 # Branch on which to run the GHA pipeline
+      MyWorkDir: tmp/ghActions/dbb-zappbuild-gha-ssh_run_${{ github.run_number }} # Absolute path to directory for storing the clone and build outputs
+      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples                           # Absolute path to workspace (root) directory containing all required source directories
+      MyApplication: MortgageApplication                                          # Application directory name (relative to MyWorkSpace)
+      MyHlq: LAURENL.SSH                                                          # High level qualifier for partitioned data sets createad during the build
       
     steps:
       - name: Clone repository
         run: ${{ env.DBB_Host }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}
     
-#       - name: DBB Impact Build
-#         run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild
+      - name: DBB Impact Build
+        run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild
 
       - name: DBB Full Build
         run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild
