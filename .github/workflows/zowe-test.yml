@@ -11,7 +11,7 @@ env:
   
   # Paths to pipeline scripts on z/OS (relative to the RSE profile user's Home Dir in USS)
   Clone: 'All-pipeline-scripts/git-clone-https.sh'       # Script to clone the code from GitHub to z/OS
-  DBB_Build: 'All-pipeline-scripts/dbb-build-non-ssh.sh' # Script to perform the DBB build on z/OS
+  DBB_Build: 'All-pipeline-scripts/dbb-build.sh' # Script to perform the DBB build on z/OS
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
