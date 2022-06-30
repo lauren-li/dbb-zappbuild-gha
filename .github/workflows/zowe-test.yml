@@ -1,6 +1,7 @@
 name: Demo-DBB_Build_on_ZOS_with_GitHub_Actions_Zowe_and_RSE_API
 ## Notes:
 # A sample z/OS DBB workflow
+
 # Global vars
 env:
   # Zowe connection information
@@ -9,9 +10,8 @@ env:
                                            #                             This could be the RSE profile user's home directory. 
   
   # Pipeline scripts on z/OS (relative to the RSE profile user's Home Dir in USS)
-  Clone: 'All-pipeline-scripts/git-clone-https.sh'          # Script to clone the code from GitHub to z/OS
+  Clone: 'All-pipeline-scripts/git-clone-https.sh'     # Script to clone the code from GitHub to z/OS
   DBB_Build: 'All-pipeline-scripts/dbb-build.sh'       # Script to perform the DBB build on z/OS
-  Prepare_Logs: 'ibm/prepare-logs.sh'      # Script to gather build log files into a single archive file
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
