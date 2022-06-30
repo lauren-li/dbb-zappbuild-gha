@@ -6,12 +6,12 @@ name: Demo-DBB_Build_on_ZOS_with_GitHub_Actions_Zowe_and_RSE_API
 env:
   # Zowe connection information
   Zowe_RSE_ProfileName: 'myRseProfile'     # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
-  Zowe_RSE_CommandWorkingDir: '/u/laurenl' # Command working directory - The Unix System Services (USS) directory from which to issue commands.
+  Zowe_RSE_CommandWorkingDir: '/u/laurenl' # Current working directory - The Unix System Services (USS) directory from which to issue commands.
                                            #                             This could be the RSE profile user's home directory. 
   
-  # Pipeline scripts on z/OS (relative to the RSE profile user's Home Dir in USS)
-  Clone: 'All-pipeline-scripts/git-clone-https.sh'     # Script to clone the code from GitHub to z/OS
-  DBB_Build: 'All-pipeline-scripts/dbb-build.sh'       # Script to perform the DBB build on z/OS
+  # Paths to pipeline scripts on z/OS (relative to the RSE profile user's Home Dir in USS)
+  Clone: 'All-pipeline-scripts/git-clone-https.sh'       # Script to clone the code from GitHub to z/OS
+  DBB_Build: 'All-pipeline-scripts/dbb-build-non-ssh.sh' # Script to perform the DBB build on z/OS
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
@@ -24,24 +24,22 @@ jobs:
     env:
       # Project related variables. GHA automatically fills in relevant repository information for values enclosed in ${{ ... }}.
       MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git      # Source code repository URL (HTTPS)
-      MyBranch: ${{ github.ref }}                                             # Branch on which to run the GHA pipeline
+      MyBranch: ${{ github.ref }}                                             # Branch to run the GHA pipeline on
       MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }} # Absolute path to directory for storing the clone and build outputs
-      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples                       # Absolute path to workspace (root) directory containing all required source directories
+      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples                   # Absolute path to workspace (root) directory containing all required source directories
       MyApplication: MortgageApplication                                      # Application directory name (relative to MyWorkSpace)
-      MyHlq: LAURENL.ZAPP.CLEAN.MASTER                                        # High level qualifier for partitioned data sets
+      MyHlq: LAURENL.ZOWE.RSE.                                                # High level qualifier for partitioned data sets
         
     steps:  
       - name: Clone repository
+        id: clone
         run: >
           zowe rse issue uss "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}"
           --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
           --rse-p "${{ env.Zowe_RSE_ProfileName }}"
 
-      - name: DBB_Impact_Build
-        run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
-
-      - name: DBB Full Build
+      - name: DBB Impact Build
         run: >
-          zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild"
+          zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild"
           --cwd "${{ env.Zowe_RSE_CommandWorkingDir }}"
           --rse-p "${{ env.Zowe_RSE_ProfileName }}"
