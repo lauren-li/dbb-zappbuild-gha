@@ -35,7 +35,7 @@ jobs:
       - id: Echo
         name: Echo
         # run: zowe rse issue uss "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
-        run: zowe rse issue uss "pwd" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
+        run: zowe rse issue uss "pwd"
 
       - id: clone
         name: Clone repository
