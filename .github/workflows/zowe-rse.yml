@@ -4,11 +4,12 @@ name: Demo-DBB_Build_on_ZOS_with_GitHub_Actions_Zowe_and_RSE_API
 # Global vars
 env:
   # Zowe connection information
-  Zowe_RSE_ProfileName: ''                  # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
+  Zowe_RSE_ProfileName: 'rse'                  # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
   Zowe_RSE_CommandWorkingDir: '/u/laurenl'  # Command working directory - The Unix System Services (USS) directory from which to issue commands.
                                             #                             This could be the RSE profile user's home directory.  
                                            
   # Pipeline scripts on z/OS (relative to the Zowe RSE user's Home Dir in Unix - USS).
+  Echo: 'ibm/echo.sh'
   Clone: 'ibm/git-clone-https.sh'           # Script to clone the code from GitHub to z/OS
   DBB_Build: 'ibm/dbb-build-test.sh'        # Script to perform the DBB build on z/OS
   Prepare_Logs: 'ibm/prepare-logs.sh'       # Script to gather build log files into a single archive file
@@ -30,7 +31,11 @@ jobs:
       MyApplication: MortgageApplication                                          # Application directory name (relative to MyWorkSpace)
       MyHlq: LAURENL.ZAPP.CLEAN.MASTER                                            # High level qualifier for partitioned data sets
         
-    steps:  
+    steps:
+      - id: Echo
+        name: Echo
+        run: zowe rse issue uss "${{ env.Echo }} ${{ MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
+
       - id: clone
         name: Clone repository
         run: zowe rse issue uss "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
