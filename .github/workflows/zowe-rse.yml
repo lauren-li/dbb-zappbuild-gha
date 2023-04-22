@@ -65,4 +65,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: build-logs
-          path: ${{ steps.download_logs.outputs.runnerBuildLogsLocation }}
+          path: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+          # path: ${{ steps.download_logs.outputs.runnerBuildLogsLocation }}
