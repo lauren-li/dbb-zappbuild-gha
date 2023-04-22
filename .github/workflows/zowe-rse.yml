@@ -47,22 +47,22 @@ jobs:
 
       - id: dbb_full_build
         name: DBB Full Build
-        run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
+        # run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - id: prepare_logs
         name: Prepare Logs 
-        # run: echo "buildLogsLocation=hi" >> "$ENV:GITHUB_OUTPUT"
-        run: echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$ENV:GITHUB_OUTPUT"
+        run: echo "buildLogsLocation=hi" >> "$ENV:GITHUB_OUTPUT"
+        # run: echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$ENV:GITHUB_OUTPUT"
         
       - id: download_logs
         name: Download Logs
-        # run: echo ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+        run: echo ${{ steps.prepare_logs.outputs.buildLogsLocation }}
         # run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
-        run: echo "runnerBuildLogsLocation=$(zowe rse download uss-file '${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}' -b)" >> "$ENV:GITHUB_OUTPUT"
+        # run: echo "runnerBuildLogsLocation=$(zowe rse download uss-file '${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}' -b)" >> "$ENV:GITHUB_OUTPUT"
 
-      - id: upload_logs
-        name: Upload Logs
-        uses: actions/checkout@v3
-        with:
-          name: build-logs
-          path: ${{ steps.download_logs.outputs.runnerBuildLogsLocation }}
+      # - id: upload_logs
+      #   name: Upload Logs
+      #   uses: actions/checkout@v3
+      #   with:
+      #     name: build-logs
+      #     path: ${{ steps.download_logs.outputs.runnerBuildLogsLocation }}
