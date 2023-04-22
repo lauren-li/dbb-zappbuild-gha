@@ -57,16 +57,20 @@ jobs:
       - id: download_logs
         name: Download Logs
         # run: echo ${{ steps.prepare_logs.outputs.buildLogsLocation }}
-        # run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
-        run: echo "runnerBuildLogsLocation=$(zowe rse download uss-file '${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}' -b)" >> "$ENV:GITHUB_OUTPUT"
+        run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+        # run: echo "runnerBuildLogsLocation=$(zowe rse download uss-file '${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}' -b)" >> "$ENV:GITHUB_OUTPUT"
 
       - name: Untar file on GitHub runner
         run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+
+      - id: get_basename
+        name: Get basename
+        run: echo "runnerBuildLogsLocation=(Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename" >> "$ENV:GITHUB_OUTPUT"
 
       - id: upload_logs
         name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
           name: build-logs
-          path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
-          # path: ${{ steps.download_logs.outputs.runnerBuildLogsLocation }}
+          # path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
+          path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
