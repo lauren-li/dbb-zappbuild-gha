@@ -57,7 +57,7 @@ jobs:
       - id: download_logs
         name: Download Logs
         # run: echo ${{ steps.prepare_logs.outputs.buildLogsLocation }}
-        run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+        run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
         # run: echo "runnerBuildLogsLocation=$(zowe rse download uss-file '${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}' -b)" >> "$ENV:GITHUB_OUTPUT"
 
       - name: Untar file on GitHub runner
