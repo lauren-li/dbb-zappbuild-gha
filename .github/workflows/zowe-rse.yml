@@ -51,7 +51,7 @@ jobs:
 
       - id: prepare_logs
         name: Prepare Logs     
-        run: echo "{buildLogsLocation}={$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}'} --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')"
+        run: echo "{buildLogsLocation}={$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')}" >> $GITHUB_OUTPUT
         
       - id: download_logs
         name: Download Logs
