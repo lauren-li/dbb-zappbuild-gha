@@ -50,10 +50,12 @@ jobs:
         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - id: prepare_logs
-        name: Prepare Logs     
-        run: echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$GITHUB_OUTPUT"
+        name: Prepare Logs 
+        run: echo "buildLogsLocation='hi'" >> "$GITHUB_OUTPUT"
+        # run: echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$GITHUB_OUTPUT"
         
       - id: download_logs
         name: Download Logs
-        run: echo "a tar file? ${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}"
+        run: echo ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+        # run: echo "a tar file? ${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}"
         # run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
