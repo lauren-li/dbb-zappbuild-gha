@@ -60,10 +60,13 @@ jobs:
         # run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
         run: echo "runnerBuildLogsLocation=$(zowe rse download uss-file '${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}' -b)" >> "$ENV:GITHUB_OUTPUT"
 
+      - name: Untar file on GitHub runner
+        run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+
       - id: upload_logs
         name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
           name: build-logs
-          path: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+          path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
           # path: ${{ steps.download_logs.outputs.runnerBuildLogsLocation }}
