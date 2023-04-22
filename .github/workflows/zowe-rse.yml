@@ -56,6 +56,14 @@ jobs:
         
       - id: download_logs
         name: Download Logs
-        run: echo ${{ steps.prepare_logs.outputs.buildLogsLocation }}
-        # run: echo "a tar file? ${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}"
+        # run: echo ${{ steps.prepare_logs.outputs.buildLogsLocation }}
         # run: zowe rse download uss-file "${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+        run: echo "runnerBuildLogsLocation=$(zowe rse download uss-file '${{ env.Zowe_RSE_WorkDir}}/${{ steps.prepare_logs.outputs.buildLogsLocation }}' -b" >> "$ENV:GITHUB_OUTPUT"
+
+
+      - id: upload_logs
+        name: Upload Logs
+        uses: actions/checkout@v3
+        with:
+          name: build-logs
+          path: ${{ steps.download_logs.outputs.runnerBuildLogsLocation }}
