@@ -63,9 +63,9 @@ jobs:
       - name: Untar file on GitHub runner
         run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
 
-      - id: get_basename
-        name: Get basename
-        run: echo "runnerBuildLogsLocation=(Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename" >> "$ENV:GITHUB_OUTPUT"
+      # - id: get_basename
+      #   name: Get basename
+      #   run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> "$ENV:GITHUB_OUTPUT"
 
       - id: upload_logs
         name: Upload Logs
@@ -73,4 +73,5 @@ jobs:
         with:
           name: build-logs
           # path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
-          path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
+          # path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
+          path: $((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)
