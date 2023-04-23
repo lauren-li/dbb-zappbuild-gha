@@ -65,7 +65,9 @@ jobs:
 
       - id: get_basename
         name: Get basename
-        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> "$ENV:GITHUB_OUTPUT"
+        # run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> "$ENV:GITHUB_OUTPUT"
+        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)/BuildReport.html" >> "$ENV:GITHUB_OUTPUT"
+
 
       - id: upload_logs
         name: Upload Logs
