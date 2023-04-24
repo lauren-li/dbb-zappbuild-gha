@@ -87,8 +87,8 @@ jobs:
       #     path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
       #     # path: $((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)
 
-      - name: Checkout
-        uses: actions/checkout@v3
+      # - name: Checkout
+      #   uses: actions/checkout@v3
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
