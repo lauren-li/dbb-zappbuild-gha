@@ -69,11 +69,37 @@ jobs:
         run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)/BuildReport.html" >> "$ENV:GITHUB_OUTPUT"
 
 
+      # - id: upload_logs
+      #   name: Upload Logs
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: build-logs
+      #     # path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
+      #     path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
+      #     # path: $((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)
+      
       - id: upload_logs
         name: Upload Logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-pages-artifact@v1
         with:
           name: build-logs
           # path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
           path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
           # path: $((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)
+    
+  deploy:
+    needs: DBB_Build_on_zOS
+
+    permissions:
+      pages: write
+      id-token: write
+      
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: self-hosted
+    steps:
+      - name: Deploy to GitHub pages
+        id: deployment
+        uses: actions/deploy-pages@v2
