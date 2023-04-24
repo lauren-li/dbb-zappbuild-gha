@@ -78,28 +78,41 @@ jobs:
       #     path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
       #     # path: $((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)
       
-      - id: upload_logs
-        name: Upload Logs
+      # - id: upload_logs
+      #   name: Upload Logs
+      #   uses: actions/upload-pages-artifact@v1
+      #   with:
+      #     name: build-logs
+      #     # path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
+      #     path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
+      #     # path: $((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)
+
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          name: build-logs
-          # path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
+          # Upload entire repository
           path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
-          # path: $((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)
-    
-  deploy:
-    needs: DBB_Build_on_zOS
-
-    permissions:
-      pages: write
-      id-token: write
-      
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: self-hosted
-    steps:
-      - name: Deploy to GitHub pages
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+    
+  # deploy:
+  #   needs: DBB_Build_on_zOS
+
+  #   permissions:
+  #     pages: write
+  #     id-token: write
+      
+  #   environment:
+  #     name: github-pages
+  #     url: ${{ steps.deployment.outputs.page_url }}
+
+  #   runs-on: self-hosted
+  #   steps:
+  #     - name: Deploy to GitHub pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v2
