@@ -35,8 +35,6 @@ jobs:
       - id: Echo
         name: Echo
         run: zowe rse issue uss "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
-        # run: zowe rse issue uss "pwd" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
-        # run: zowe rse ls ds "LAURENL.*"
 
       - id: clone
         name: Clone repository
@@ -51,14 +49,11 @@ jobs:
 
       - id: prepare_logs
         name: Prepare Logs 
-        # run: echo "buildLogsLocation=hi" >> "$ENV:GITHUB_OUTPUT"
         run: echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$ENV:GITHUB_OUTPUT"
         
       - id: download_logs
         name: Download Logs
-        # run: echo ${{ steps.prepare_logs.outputs.buildLogsLocation }}
         run: zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
-        # run: echo "runnerBuildLogsLocation=$(zowe rse download uss-file '${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}' -b)" >> "$ENV:GITHUB_OUTPUT"
 
       - name: Untar file on GitHub runner
         run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
@@ -66,15 +61,10 @@ jobs:
       - id: get_basename
         name: Get basename
         run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> "$ENV:GITHUB_OUTPUT"
-        # run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)/BuildReport.html" >> "$ENV:GITHUB_OUTPUT"
-
 
       - id: upload_logs
         name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
-          # name: build-logs
-          name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
-          # path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
-          path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
-          # path: $((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)
+          name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
+          path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Path to artifact
