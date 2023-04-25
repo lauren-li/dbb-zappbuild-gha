@@ -65,15 +65,16 @@ jobs:
 
       - id: get_basename
         name: Get basename
-        # run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> "$ENV:GITHUB_OUTPUT"
-        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)/BuildReport.html" >> "$ENV:GITHUB_OUTPUT"
+        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> "$ENV:GITHUB_OUTPUT"
+        # run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)/BuildReport.html" >> "$ENV:GITHUB_OUTPUT"
 
 
       - id: upload_logs
         name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
-          name: build-logs
+          # name: build-logs
+          name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
           # path: (Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename
           path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
           # path: $((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)
