@@ -55,8 +55,7 @@ jobs:
         name: Download Logs  # Create new "logs" directory (if not already existing) on GitHub Actions Runner, then download logs into it. (Directory name "logs" can be changed if needed.) 
         run: | 
           New-Item logs -ItemType directory -Force
-          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" \
-            -f "logs/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "logs/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
 
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
       # - name: Untar file on GitHub runner
