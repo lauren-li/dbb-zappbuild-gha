@@ -48,22 +48,22 @@ jobs:
         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - id: prepare_logs
-        name: Prepare Logs 
+        name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GitHub Actions
         run: echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$ENV:GITHUB_OUTPUT"
         
       - id: download_logs
-        name: Download Logs
-        run: |
-          mkdir -p logs
-          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "logs${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
-        shell: bash
+        name: Download Logs  # Create new "logs" directory (if not already existing) on GitHub Actions Runner, then download logs into it. (Directory name "logs" can be changed if needed.) 
+        run: | 
+          New-Item logs -ItemType directory -Force
+          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" \
+            -f "logs/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
 
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
       # - name: Untar file on GitHub runner
       #   run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
 
       - id: get_basename
-        name: Get basename  # Get name for artifact (and path, if uploading directory)
+        name: Get basename  # Get name for artifact (also used as path, if uploading directory)
         run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> "$ENV:GITHUB_OUTPUT"
 
       - id: upload_logs
