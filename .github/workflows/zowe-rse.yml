@@ -66,7 +66,7 @@ jobs:
         name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.prepare_logs.buildLogsLocation }}
-          path: ${{ steps.prepare_logs.buildLogsLocation }}
+          name: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+          path: ${{ steps.prepare_logs.outputs.buildLogsLocation }}
           # name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
           # path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Path to artifact
