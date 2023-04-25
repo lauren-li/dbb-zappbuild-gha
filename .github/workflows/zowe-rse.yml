@@ -53,8 +53,11 @@ jobs:
         
       - id: download_logs
         name: Download Logs
-        run: zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "logs/" -b
-      
+        run: |
+          mkdir -p logs
+          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "logs${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+        shell: bash
+
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
       # - name: Untar file on GitHub runner
       #   run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
