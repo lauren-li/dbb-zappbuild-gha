@@ -48,42 +48,31 @@ jobs:
         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - id: prepare_logs
-        name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GitHub Actions
-        # env:
-        #   buildLogsLocation: TEST
-          # echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
-          # buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')
-          # $buildLogsLocation1 = "test"        
+        name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GitHub Actions       
         run: |
-          $buildLogsLocation1 = $(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')
-          echo "TEST PREPARE"
-          echo "$buildLogsLocation1"
-          echo "buildLogsLocation=$buildLogsLocation1" >> $ENV:GITHUB_OUTPUT
-          echo "runnerLogsDir=logs" >> $ENV:GITHUB_OUTPUT
-          echo "runnerBuildLogsLocation=$((Get-Item $buildLogsLocation1).Basename)" >> $ENV:GITHUB_OUTPUT
+          echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
 
       - id: download_logs
         name: Download Logs  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
         run: |
-          echo "TEST DL"
-          echo "${{ steps.prepare_logs.outputs.runnerLogsDir }}"
-          echo ${{ steps.prepare_logs.outputs.runnerLogsDir }}
-          New-Item ${{ steps.prepare_logs.outputs.runnerLogsDir }} -ItemType directory -Force
-          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "${{ steps.prepare_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+          $runnerLogsDir = "logs"
+          echo "runnerLogsDir=$runnerLogsDir" >> $ENV:GITHUB_OUTPUT
+          New-Item $runnerLogsDir -ItemType directory -Force
+          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "$runnerLogsDir/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
 
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
       # - name: Untar file on GitHub runner
       #   run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
 
-      # - id: get_basename
-      #   name: Get basename  # Get name for artifact (also used as path, if uploading directory)
-      #   run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
+      - id: get_basename
+        name: Get basename  # Get name for artifact (also used as path, if uploading directory)
+        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
 
       - id: upload_logs
         name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.prepare_logs.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
-          path: ${{ steps.prepare_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}        # Path to artifact
-          # path: ${{ steps.prepare_logs.outputs.runnerBuildLogsLocation }}  # Use this path instead if uploading the directory instead of tarfile
+          name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
+          path: ${{ steps.download.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.buildLogsLocation }}        # Path to artifact
+          # path: ${{ steps.download.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Use this path instead if uploading the directory instead of tarfile
 
