@@ -6,13 +6,18 @@ env:
   # Zowe connection information
   Zowe_RSE_ProfileName: 'rse'                  # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
   Zowe_RSE_CommandWorkingDir: '/u/laurenl'  # Command working directory - The Unix System Services (USS) directory from which to issue commands.
-                                            #                             This could be the RSE profile user's home directory.  
+                                            #                             This could be the RSE profile user's home directory.
                                            
   # Pipeline scripts on z/OS (relative to the Zowe RSE user's Home Dir in Unix - USS).
   Echo: 'ibm/echo.sh'                       # Optional script for testing connection from GHA runner to z/OS
   Clone: 'ibm/git-clone-https.sh'           # Script to clone the code from GitHub to z/OS
   DBB_Build: 'ibm/dbb-build-test.sh'        # Script to perform the DBB build on z/OS
   Prepare_Logs: 'ibm/prepare-logs.sh'       # Script to gather build log files into a single archive file
+
+  # Project related variables. GHA automatically fills in relevant repository information for values enclosed in ${{...}}.
+  MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git          # Source code repository URL (HTTPS)
+  MyBranch: ${{ github.ref }}                                                 # Branch to run the GHA pipeline on
+  MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}     # Absolute path to USS directory for storing the clone and build outputs
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
@@ -23,13 +28,10 @@ jobs:
     runs-on: self-hosted
 
     env:
-      # Project related variables. GHA automatically fills in relevant repository information for values enclosed in ${{...}}.
-      MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git          # Source code repository URL (HTTPS)
-      MyBranch: ${{ github.ref }}                                                 # Branch to run the GHA pipeline on
-      MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}     # Absolute path to directory for storing the clone and build outputs
-      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples                           # Absolute path to workspace (root) directory containing all required source directories
-      MyApplication: MortgageApplication                                          # Application directory name (relative to MyWorkSpace)
-      MyHlq: LAURENL.ZAPP.CLEAN.MASTER                                            # High level qualifier for partitioned data sets
+      # DBB-specific variables. 
+      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples   # Absolute USS path to workspace (root) directory containing all required source directories
+      MyApplication: MortgageApplication                  # Application directory name (relative to MyWorkSpace)
+      MyHlq: LAURENL.ZAPP.CLEAN.MASTER                    # High level qualifier for partitioned data sets
 
     steps:
       - name: Echo - Test GHA runner connection to z/OS  # Optional step for basic connection test from GHA runner to z/OS
@@ -38,30 +40,28 @@ jobs:
       - name: Clone repository
         run: zowe rse issue uss "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
-#       - name: DBB_Impact_Build
-#         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
-
       - name: DBB Full Build
         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
-      - id: prepare_logs
-        name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GHA runner. Create new logs subdirectory (if not already existing) in GHA runner's working directory.
-        run: |
-          echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
-          New-Item logs -ItemType directory -Force
+#       - name: DBB Impact Build
+#         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
+
+      - name: Ensure logs subdirectory exists on GHA runner  # Create new "logs" subdirectory (if not already existing) in GHA runner's working directory, to be used for next step.
+        # Below is a PowerShell command. For bash, it can be replaced with: mkdir -p logs
+        run: New-Item logs -ItemType directory -Force
 
   Upload_Logs_to_GitHub:
     needs: DBB_Build_on_zOS
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: logs  # Must match name of logs subdirectory created in previous job's prepare_logs step. (GHA does not allow expressions here.)
+        working-directory: logs  # Must match name of "logs" subdirectory created in previous job's prepare_logs step. (GHA does not allow expressions here.)
 
     steps:
-      - name: test pwd
+      - id: prepare_logs
+        name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GHA runner.
         run: |
-          pwd
-          echo ${{ jobs.DBB_Build_on_zOS.steps.prepare_logs.outputs.buildLogsLocation }}
+          echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
 
       # - id: download_logs
       #   name: Download Logs from USS to GHA runner  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
