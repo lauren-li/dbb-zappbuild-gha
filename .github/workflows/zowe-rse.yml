@@ -71,7 +71,7 @@ jobs:
       - name: test runnerBuildLogsLocation
         run: |
           echo ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
-          echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.buildLogsLocation }} 
+          echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }} 
           echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
 
       - id: upload_logs
@@ -79,6 +79,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
-          path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.buildLogsLocation }}        # Path to artifact
+          path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}        # Path to artifact
           # path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Use this path instead if uploading the directory instead of tarfile
 
