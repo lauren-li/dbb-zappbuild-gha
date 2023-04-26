@@ -49,13 +49,13 @@ jobs:
 
       - id: prepare_logs
         name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GitHub Actions
-          # echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$ENV:GITHUB_OUTPUT"
+          # echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
         run: |
           buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')"
           echo "${ buildLogsLocation }"
-          echo "${ buildLogsLocation }" >> "$ENV:GITHUB_OUTPUT"
-          echo "runnerLogsDir=logs" >> "$ENV:GITHUB_OUTPUT"
-          echo "runnerBuildLogsLocation=$((Get-Item ${ buildLogsLocation }).Basename)" >> "$ENV:GITHUB_OUTPUT"
+          echo "${ buildLogsLocation }" >> $ENV:GITHUB_OUTPUT
+          echo "runnerLogsDir=logs" >> $ENV:GITHUB_OUTPUT
+          echo "runnerBuildLogsLocation=$((Get-Item ${ buildLogsLocation }).Basename)" >> $ENV:GITHUB_OUTPUT
 
       - id: download_logs
         name: Download Logs  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
@@ -72,7 +72,7 @@ jobs:
 
       # - id: get_basename
       #   name: Get basename  # Get name for artifact (also used as path, if uploading directory)
-      #   run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> "$ENV:GITHUB_OUTPUT"
+      #   run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
 
       - id: upload_logs
         name: Upload Logs
