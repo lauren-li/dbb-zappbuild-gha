@@ -71,7 +71,7 @@ jobs:
         name: Get basename  # Get artifact name without extension. (This is also the default build log directory name if the following untar step is run. )
         run: echo "runnerBuildLogBaseName=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogFileName }}).Basename)" >> $ENV:GITHUB_OUTPUT
 
-      # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
+      # If uploading directory instead of tarfile: Uncomment the below untar step. (It will upload as a zip file on GitHub.)
       # - name: Untar file on GHA runner
       #   run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogFileName }}
 
@@ -80,4 +80,4 @@ jobs:
         with:
           name: ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}                          # Name used for artifact when it is uploaded
           path: ${{ env.RunnerLogDir }}/${{ steps.prepare_logs.outputs.buildLogFileName }}        # Path to tarfile artifact
-          # path: ${{ env.RunnerLogDir }}/${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # Use this path instead if uploading the directory instead of tarfile
+          # path: ${{ env.RunnerLogDir }}/${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # If uploading directory instead of tarfile: Use this path instead.
