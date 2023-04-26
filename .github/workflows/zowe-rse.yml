@@ -78,7 +78,8 @@ jobs:
       - name: test runnerBuildLogBaseName
         run: |
           pwd
-          ls
+          echo ${GITHUB_WORKSPACE}
+          echo ${{ github.workspace }}
           echo ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}
           echo ${{ steps.prepare_logs.outputs.buildLogFileName }} 
 
