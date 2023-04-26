@@ -61,30 +61,31 @@ jobs:
       - id: prepare_logs
         name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GHA runner.
         run: |
-          echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
+          echo "buildLogFileName=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
 
       - id: download_logs
         name: Download Logs from USS to GHA runner
-        run: zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+        run: zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogFileName }}" -b
 
       - id: get_basename
-        name: Get basename  # Get artifact name without extension (also used for path, if uploading directory)
-        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
+        name: Get basename  # Get artifact name without extension
+        run: echo "runnerBuildLogBaseName=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogFileName }}).Basename)" >> $ENV:GITHUB_OUTPUT
 
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
       - name: Untar file on GHA runner
-        run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+        run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogFileName }}
 
-      - name: test runnerBuildLogsLocation
+      - name: test runnerBuildLogBaseName
         run: |
           pwd
-          echo ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
-          echo ${{ steps.prepare_logs.outputs.buildLogsLocation }} 
+          ls
+          echo ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}
+          echo ${{ steps.prepare_logs.outputs.buildLogFileName }} 
 
       - name: Upload Logs from GHA runner to GitHub
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
-          # path: ${{ steps.prepare_logs.outputs.buildLogsLocation }}        # Path to artifact
-          path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Use this path instead if uploading the directory instead of tarfile
+          name: ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # Name used for artifact when it is uploaded
+          # path: ${{ steps.prepare_logs.outputs.buildLogFileName }}        # Path to artifact
+          path: ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # Use this path instead if uploading the directory instead of tarfile
 
