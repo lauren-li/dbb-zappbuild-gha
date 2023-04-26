@@ -54,7 +54,7 @@ jobs:
           # echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
           # buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')        
         run: |
-          $buildLogsLocation1 = test
+          $buildLogsLocation1 = "test"
           echo "TEST PREPARE"
           echo "$buildLogsLocation1"
           echo "buildLogsLocation=$buildLogsLocation1" >> $ENV:GITHUB_OUTPUT
