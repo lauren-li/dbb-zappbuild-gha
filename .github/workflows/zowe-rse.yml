@@ -51,6 +51,7 @@ jobs:
         name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GitHub Actions
         run: |
           echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$ENV:GITHUB_OUTPUT"
+          echo "$buildLogsLocation"
           echo "runnerLogsDir=logs" >> "$ENV:GITHUB_OUTPUT"
           echo "runnerBuildLogsLocation=$((Get-Item $buildLogsLocation).Basename)" >> "$ENV:GITHUB_OUTPUT"
 
