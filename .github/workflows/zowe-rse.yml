@@ -49,17 +49,18 @@ jobs:
 
       - id: prepare_logs
         name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GitHub Actions
-        run: echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$ENV:GITHUB_OUTPUT"
-        
+        run: |
+          echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> "$ENV:GITHUB_OUTPUT"
+          echo "runnerLogsDir=logs" >> "$ENV:GITHUB_OUTPUT"
+
       - id: download_logs
         name: Download Logs  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
         run: |
-          echo "runnerLogsDir=logs" >> "$ENV:GITHUB_OUTPUT"
           echo "TEST DL"
-          echo "${{ steps.download_logs.outputs.runnerLogsDir }}"
-          echo ${{ steps.download_logs.outputs.runnerLogsDir }}
-          New-Item ${{ steps.download_logs.outputs.runnerLogsDir }} -ItemType directory -Force
-          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+          echo "${{ steps.prepare_logs.outputs.runnerLogsDir }}"
+          echo ${{ steps.prepare_logs.outputs.runnerLogsDir }}
+          New-Item ${{ steps.prepare_logs.outputs.runnerLogsDir }} -ItemType directory -Force
+          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "${{ steps.prepare_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
 
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
       # - name: Untar file on GitHub runner
@@ -74,6 +75,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
-          path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}        # Path to artifact
+          path: ${{ steps.prepare_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}        # Path to artifact
           # path: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Use this path instead if uploading the directory instead of tarfile
 
