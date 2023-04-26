@@ -9,7 +9,7 @@ env:
                                             #                             This could be the RSE profile user's home directory.  
                                            
   # Pipeline scripts on z/OS (relative to the Zowe RSE user's Home Dir in Unix - USS).
-  Echo: 'ibm/echo.sh'
+  Echo: 'ibm/echo.sh'                       # Optional script for testing connection from GHA runner to z/OS
   Clone: 'ibm/git-clone-https.sh'           # Script to clone the code from GitHub to z/OS
   DBB_Build: 'ibm/dbb-build-test.sh'        # Script to perform the DBB build on z/OS
   Prepare_Logs: 'ibm/prepare-logs.sh'       # Script to gather build log files into a single archive file
@@ -32,19 +32,16 @@ jobs:
       MyHlq: LAURENL.ZAPP.CLEAN.MASTER                                            # High level qualifier for partitioned data sets
 
     steps:
-      - id: Echo
-        name: Echo
+      - name: Test GHA runner connection to z/OS  # Optional step for basic connection test from GHA runner to z/OS
         run: zowe rse issue uss "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
-      - id: clone
-        name: Clone repository
+      - name: Clone repository
         run: zowe rse issue uss "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
 #       - name: DBB_Impact_Build
 #         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
-      - id: dbb_full_build
-        name: DBB Full Build
+      - name: DBB Full Build
         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - id: prepare_logs
@@ -53,29 +50,28 @@ jobs:
           echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
 
       - id: download_logs
-        name: Download Logs  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
+        name: Download Logs from USS to GHA runner  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
         run: |
           $runnerLogsDir = "logs"
           echo "runnerLogsDir=$runnerLogsDir" >> $ENV:GITHUB_OUTPUT
           New-Item $runnerLogsDir -ItemType directory -Force
           zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "$runnerLogsDir/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
 
+      - id: get_basename
+        name: Get basename  # Get artifact name without extension (also used for path, if uploading directory)
+        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
+
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
-      - name: Untar file on GitHub runner
+      - name: Untar file on GHA runner
         run: tar -xvf ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }} -C ${{ steps.download_logs.outputs.runnerLogsDir }}
 
-      - id: get_basename
-        name: Get basename  # Get name for artifact (also used as path, if uploading directory)
-        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
-        
       # - name: test runnerBuildLogsLocation
       #   run: |
       #     echo ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
       #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }} 
       #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
 
-      - id: upload_logs
-        name: Upload Logs
+      - name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
