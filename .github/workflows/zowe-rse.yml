@@ -61,24 +61,24 @@ jobs:
           zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "$runnerLogsDir/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
 
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
-      # - name: Untar file on GitHub runner
-      #   run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
+      - name: Untar file on GitHub runner
+        run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogsLocation }}
 
       - id: get_basename
         name: Get basename  # Get name for artifact (also used as path, if uploading directory)
         run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
         
-      - name: test runnerBuildLogsLocation
-        run: |
-          echo ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
-          echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }} 
-          echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
+      # - name: test runnerBuildLogsLocation
+      #   run: |
+      #     echo ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
+      #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }} 
+      #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
 
       - id: upload_logs
         name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
-          path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}        # Path to artifact
-          # path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Use this path instead if uploading the directory instead of tarfile
+          # path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}        # Path to artifact
+          path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Use this path instead if uploading the directory instead of tarfile
 
