@@ -81,6 +81,7 @@ jobs:
           echo ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}
           echo ${{ steps.prepare_logs.outputs.buildLogFileName }}
           echo ${{ github.workspace }}
+          echo ${{ defaults.run.working-directory }}
           echo ${GITHUB_WORKSPACE}
 
       - name: Upload Logs from GHA runner to GitHub
