@@ -63,8 +63,7 @@ jobs:
         name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GHA runner.
         run: echo "buildLogFileName=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
 
-      - id: download_logs
-        name: Download Logs from USS to GHA runner
+      - name: Download Logs from USS to GHA runner
         run: zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogFileName }}" -b
 
       - id: get_basename
