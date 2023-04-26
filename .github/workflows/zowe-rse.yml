@@ -66,7 +66,7 @@ jobs:
 
       - id: get_basename
         name: Get basename  # Get name for artifact (also used as path, if uploading directory)
-        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.download.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
+        run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
         
       - name: test runnerBuildLogsLocation
         run: |
