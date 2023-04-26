@@ -68,17 +68,17 @@ jobs:
         name: Get basename  # Get name for artifact (also used as path, if uploading directory)
         run: echo "runnerBuildLogsLocation=$((Get-Item ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}).Basename)" >> $ENV:GITHUB_OUTPUT
         
-      - name: test runnerBuildLogsLocation
-        run: |
-          echo ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
-          echo ${{ steps.download.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.buildLogsLocation }} 
-          echo ${{ steps.download.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
+      # - name: test runnerBuildLogsLocation
+      #   run: |
+      #     echo ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
+      #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.buildLogsLocation }} 
+      #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
 
       - id: upload_logs
         name: Upload Logs
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
-          path: ${{ steps.download.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.buildLogsLocation }}        # Path to artifact
-          # path: ${{ steps.download.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Use this path instead if uploading the directory instead of tarfile
+          path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.buildLogsLocation }}        # Path to artifact
+          # path: ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Use this path instead if uploading the directory instead of tarfile
 
