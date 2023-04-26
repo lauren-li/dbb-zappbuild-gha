@@ -32,7 +32,7 @@ jobs:
       MyHlq: LAURENL.ZAPP.CLEAN.MASTER                                            # High level qualifier for partitioned data sets
 
     steps:
-      - name: Test GHA runner connection to z/OS  # Optional step for basic connection test from GHA runner to z/OS
+      - name: Echo - Test GHA runner connection to z/OS  # Optional step for basic connection test from GHA runner to z/OS
         run: zowe rse issue uss "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - name: Clone repository
@@ -48,6 +48,19 @@ jobs:
         name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GitHub Actions       
         run: |
           echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
+
+  Build_Log_GitHub_Upload:
+    needs: DBB_Build_on_zOS
+    runs-on: self-hosted
+    env:
+      working-directory: logs  # Name of the logs subdirectory to be created on the GHA runner
+
+    steps:
+      - name: Echo 1
+        run: echo "Test job 2"
+      
+      - name: Echo2 - Test GHA runner connection to z/OS  # Optional step for basic connection test from GHA runner to z/OS
+        run: zowe rse issue uss "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - id: download_logs
         name: Download Logs from USS to GHA runner  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
@@ -71,7 +84,7 @@ jobs:
       #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }} 
       #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
 
-      - name: Upload Logs
+      - name: Upload Logs to GitHub
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
