@@ -15,9 +15,10 @@ env:
   Prepare_Logs: 'ibm/prepare-logs.sh'       # Script to gather build log files into a single archive file
 
   # Project-related variables. GHA automatically fills in relevant repository information for values enclosed in ${{...}}.
+  MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}     # Absolute path to USS directory for storing the clone and build outputs
   MyRepoHttps: ${{ github.server_url }}/${{ github.repository }}.git          # Source code repository URL (HTTPS)
   MyBranch: ${{ github.ref }}                                                 # Branch to run the GHA pipeline on
-  MyWorkDir: tmp/ghActions/dbb-zappbuild-gha_run_${{ github.run_number }}     # Absolute path to USS directory for storing the clone and build outputs
+  RunnerLogDir: logs                                                          # Subdirectory for storing logs on GHA runner (relative to runner's working directory)
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
@@ -46,16 +47,16 @@ jobs:
 #       - name: DBB Impact Build
 #         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
-      - name: Ensure logs subdirectory exists on GHA runner  # Create new "logs" subdirectory (if not already existing) in GHA runner's working directory, to be used for next step.
-        # Below is a PowerShell command. For bash, it can be replaced with: mkdir -p logs
-        run: New-Item logs -ItemType directory -Force
+      - name: Ensure logs subdirectory exists on GHA runner  # Create new logs subdirectory (if not already existing) in GHA runner's working directory, to be used for next step.
+        # Below is a PowerShell command. For bash, it can be replaced with: mkdir -p ${{ env.RunnerLogDir }}
+        run: New-Item ${{ env.RunnerLogDir }} -ItemType directory -Force
 
   Upload_Logs_to_GitHub:
     needs: DBB_Build_on_zOS
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ${{ env.MyWorkDir }}  # Use newly-created "logs" subdirectory from previous job for the next steps. (GHA does not allow expressions here.)
+        working-directory: ${{ env.RunnerLogDir }}  # Use logs subdirectory created in previous job to run the next steps.
 
     steps:
       - id: prepare_logs
@@ -75,18 +76,18 @@ jobs:
       # - name: Untar file on GHA runner
       #   run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogFileName }}
 
-      - name: test runnerBuildLogBaseName
-        run: |
-          pwd
-          echo ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}
-          echo ${{ steps.prepare_logs.outputs.buildLogFileName }}
-          echo ${{ github.workspace }}
-          echo $ENV:GITHUB_WORKSPACE
+      # - name: test runnerBuildLogBaseName
+      #   run: |
+      #     pwd
+      #     echo ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}
+      #     echo ${{ steps.prepare_logs.outputs.buildLogFileName }}
+      #     echo ${{ github.workspace }}
+      #     echo $ENV:GITHUB_WORKSPACE
 
       - name: Upload Logs from GHA runner to GitHub
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # Name used for artifact when it is uploaded
-          path: ${{ steps.prepare_logs.outputs.buildLogFileName }}        # Path to artifact
-          # path: ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # Use this path instead if uploading the directory instead of tarfile
+          path: ${{ env.RunnerLogDir }}/${{ steps.prepare_logs.outputs.buildLogFileName }}        # Path to artifact
+          # path: ${{ env.RunnerLogDir }}/${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # Use this path instead if uploading the directory instead of tarfile
 
