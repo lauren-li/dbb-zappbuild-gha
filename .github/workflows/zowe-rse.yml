@@ -4,7 +4,7 @@ name: Demo-DBB_Build_on_ZOS_with_GitHub_Actions_Zowe_and_RSE_API
 # Global vars
 env:
   # Zowe connection information
-  Zowe_RSE_ProfileName: 'rse'                  # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
+  Zowe_RSE_ProfileName: 'rse'               # Name of a valid RSE profile on the GitHub Actions (GHA) runner.
   Zowe_RSE_CommandWorkingDir: '/u/laurenl'  # Command working directory - The Unix System Services (USS) directory from which to issue commands.
                                             #                             This could be the RSE profile user's home directory.
                                            
@@ -69,25 +69,16 @@ jobs:
         run: zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogFileName }}" -b
 
       - id: get_basename
-        name: Get basename  # Get artifact name without extension
+        name: Get basename  # Get artifact name without extension. (This is also the default build log directory name if the following untar step is run. )
         run: echo "runnerBuildLogBaseName=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogFileName }}).Basename)" >> $ENV:GITHUB_OUTPUT
 
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
       # - name: Untar file on GHA runner
       #   run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogFileName }}
 
-      # - name: test runnerBuildLogBaseName
-      #   run: |
-      #     pwd
-      #     echo ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}
-      #     echo ${{ steps.prepare_logs.outputs.buildLogFileName }}
-      #     echo ${{ github.workspace }}
-      #     echo $ENV:GITHUB_WORKSPACE
-
       - name: Upload Logs from GHA runner to GitHub
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # Name used for artifact when it is uploaded
-          path: ${{ env.RunnerLogDir }}/${{ steps.prepare_logs.outputs.buildLogFileName }}        # Path to artifact
+          name: ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}                          # Name used for artifact when it is uploaded
+          path: ${{ env.RunnerLogDir }}/${{ steps.prepare_logs.outputs.buildLogFileName }}        # Path to tarfile artifact
           # path: ${{ env.RunnerLogDir }}/${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # Use this path instead if uploading the directory instead of tarfile
-
