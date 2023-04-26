@@ -45,20 +45,23 @@ jobs:
         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - id: prepare_logs
-        name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GitHub Actions       
+        name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GHA runner. Create new logs subdirectory (if not already existing) in GHA runner's working directory.
         run: |
           echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
+          New-Item logs -ItemType directory -Force
 
   Upload_Logs_to_GitHub:
     needs: DBB_Build_on_zOS
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: logs  # Name of the logs subdirectory to be created on the GHA runner
+        working-directory: logs  # Must match name of logs subdirectory created in previous job's prepare_logs step. (GHA does not allow expressions here.)
 
     steps:
       - name: test pwd
-        run: pwd
+        run: |
+          pwd
+          echo ${{ steps.prepare_logs.outputs.buildLogsLocation }}
 
       # - id: download_logs
       #   name: Download Logs from USS to GHA runner  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
