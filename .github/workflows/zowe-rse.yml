@@ -49,26 +49,20 @@ jobs:
         run: |
           echo "buildLogsLocation=$(zowe rse issue uss '${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}' --cwd '${{ env.Zowe_RSE_CommandWorkingDir}}')" >> $ENV:GITHUB_OUTPUT
 
-  Build_Log_GitHub_Upload:
+  Upload_Logs_to_GitHub:
     needs: DBB_Build_on_zOS
     runs-on: self-hosted
     env:
       working-directory: logs  # Name of the logs subdirectory to be created on the GHA runner
 
-    steps:
-      - name: Echo 1
-        run: echo "Test job 2"
-      
-      - name: Echo2 - Test GHA runner connection to z/OS  # Optional step for basic connection test from GHA runner to z/OS
-        run: zowe rse issue uss "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
-
-      - id: download_logs
-        name: Download Logs from USS to GHA runner  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
-        run: |
-          $runnerLogsDir = "logs"
-          echo "runnerLogsDir=$runnerLogsDir" >> $ENV:GITHUB_OUTPUT
-          New-Item $runnerLogsDir -ItemType directory -Force
-          zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "$runnerLogsDir/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
+    steps:     
+      # - id: download_logs
+      #   name: Download Logs from USS to GHA runner  # Create new logs directory (if not already existing) in GitHub Actions Runner's working directory, then download logs into it. 
+      #   run: |
+      #     $runnerLogsDir = "logs"
+      #     echo "runnerLogsDir=$runnerLogsDir" >> $ENV:GITHUB_OUTPUT
+      #     New-Item $runnerLogsDir -ItemType directory -Force
+      #     zowe rse download uss-file "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.Zowe_RSE_WorkDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -f "$runnerLogsDir/${{ steps.prepare_logs.outputs.buildLogsLocation }}" -b
 
       - id: get_basename
         name: Get basename  # Get artifact name without extension (also used for path, if uploading directory)
@@ -84,7 +78,7 @@ jobs:
       #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }} 
       #     echo ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.get_basename.outputs.runnerBuildLogsLocation }}
 
-      - name: Upload Logs to GitHub
+      - name: Upload Logs from GHA runner to GitHub
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.get_basename.outputs.runnerBuildLogsLocation }}  # Name used for artifact when it is uploaded
