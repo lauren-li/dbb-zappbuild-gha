@@ -62,7 +62,7 @@ jobs:
 
       # Uncomment the below untar step if you want to upload the directory rather than the tarfile. (It will upload as a zip file on GitHub.)
       - name: Untar file on GitHub runner
-        run: tar -xvf ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }}
+        run: tar -xvf ${{ steps.download_logs.outputs.runnerLogsDir }}/${{ steps.prepare_logs.outputs.buildLogsLocation }} -C ${{ steps.download_logs.outputs.runnerLogsDir }}
 
       - id: get_basename
         name: Get basename  # Get name for artifact (also used as path, if uploading directory)
