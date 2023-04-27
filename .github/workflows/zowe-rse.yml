@@ -48,8 +48,8 @@ jobs:
 #         run: zowe rse issue uss "${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --impactBuild" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - name: Ensure logs subdirectory exists on GHA runner  # Create new logs subdirectory (if not already existing) in GHA runner's working directory, to be used for next step.
-        # Below is a PowerShell command. For bash, it can be replaced with: mkdir -p ${{ env.RunnerLogDir }}
-        run: New-Item ${{ env.RunnerLogDir }} -ItemType directory -Force
+        run: mkdir -p ${{ env.RunnerLogDir }}
+        shell: bash  # Specify bash shell for compatibility with Windows-based runners (which use PowerShell by default)
 
   Upload_Logs_to_GitHub:
     needs: DBB_Build_on_zOS
