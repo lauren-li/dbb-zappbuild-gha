@@ -1,3 +1,21 @@
+#===================================================================================
+# NAME: zowe-rse.yml
+#
+# DESCRIPTION:
+# A sample z/OS DBB workflow using GitHub Actions with an IBM RSE API Plug-in for Zowe CLI profile (RSE profile)
+# This sample runs GitHub Actions on a self-hosted runner (Windows PowerShell) to:
+# 1. Clone the application repo to z/OS UNIX System Services (z/OS UNIX).
+# 2. Run a DBB build on z/OS.
+# 3. Create a tarfile from the DBB build logs on z/OS and download it to the GitHub Actions runner.
+# 4. Upload the build logs as a .zip artifact from the GitHub Actions runner to GitHub.
+#
+# USAGE: Place this file in the application's .github/workflows folder.
+# This sample only supports a manually-triggered workflow, but can be customized for auto triggers (push, pull, etc.).
+#
+# PARAMETERS: This worfklow file contains environment variables for customization, which are documented with inline comments.
+#
+#===================================================================================
+
 name: Demo-DBB_Build_on_ZOS_with_GitHub_Actions_Zowe_and_RSE_API
 ## Notes:
 # A sample z/OS DBB workflow using an IBM RSE API Plug-in for Zowe CLI profile (RSE profile)
