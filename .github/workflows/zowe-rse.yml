@@ -54,7 +54,8 @@ jobs:
 
     steps:
       - name: Echo - Test GHA runner connection to z/OS  # Optional step for basic connection test from GHA runner to z/OS
-        run: zowe rse issue unix "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
+        # run: zowe rse issue unix "${{ env.Echo }} ${{ env.MyRepoHttps }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
+        run: zowe rse issue unix "${{ env.Echo }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
 
       - name: Clone repository
         run: zowe rse issue unix "${{ env.Clone }} ${{ env.MyRepoHttps }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}" --cwd "${{ env.Zowe_RSE_CommandWorkingDir}}"
