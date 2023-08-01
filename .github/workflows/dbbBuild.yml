@@ -35,3 +35,38 @@ jobs:
     
       - name: DBB_Impact_Build
         run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild
+
+      - name: Ensure logs subdirectory exists on GHA runner  # Create new logs subdirectory (if not already existing) in GHA runner's working directory, to be used for next step.
+        # Below is a PowerShell command. For bash, it can be replaced with: mkdir -p ${{ env.RunnerLogDir }}
+        run: New-Item ${{ env.RunnerLogDir }} -ItemType directory -Force
+
+  Upload_Logs_to_GitHub:
+    needs: DBB_Build_on_zOS
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ${{ env.RunnerLogDir }}  # Use logs subdirectory created in previous job to run the next steps.
+
+    steps:
+      - id: prepare_logs
+        name: Prepare Logs  # Package build logs on z/OS as tar file, and pass filename back to GHA runner.
+        run: echo "buildLogFileName=${{ env.DBB_Host }} ${{ env.Prepare_Logs }} ${{ env.MyWorkDir }}" >> $ENV:GITHUB_OUTPUT
+
+      - name: Download Logs from z/OS UNIX to GHA runner
+        run: zowe files download uf "${{ env.Zowe_RSE_CommandWorkingDir}}/${{ env.MyWorkDir }}/${{ steps.prepare_logs.outputs.buildLogFileName }}" -b
+
+      - id: get_basename
+        name: Get basename  # Get artifact name without extension. (This is also the default build log directory name if the following untar step is run. )
+        run: echo "runnerBuildLogBaseName=$((Get-Item ${{ steps.prepare_logs.outputs.buildLogFileName }}).Basename)" >> $ENV:GITHUB_OUTPUT
+
+      # If uploading directory instead of tarfile: Uncomment the below untar step. (It will upload as a zip file on GitHub.)
+      # - name: Untar file on GHA runner
+      #   run: tar -xvf ${{ steps.prepare_logs.outputs.buildLogFileName }}
+
+      - name: Upload Logs from GHA runner to GitHub
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.get_basename.outputs.runnerBuildLogBaseName }}                          # Name used for artifact when it is uploaded
+          path: ${{ env.RunnerLogDir }}/${{ steps.prepare_logs.outputs.buildLogFileName }}        # Path to tarfile artifact
+          # path: ${{ env.RunnerLogDir }}/${{ steps.get_basename.outputs.runnerBuildLogBaseName }}  # If uploading directory instead of tarfile: Use this path instead.
+
