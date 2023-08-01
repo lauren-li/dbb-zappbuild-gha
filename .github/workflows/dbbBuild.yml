@@ -10,7 +10,8 @@ env:
   # HERE
   Echo: 'ibm/echo.sh'
   Clone: 'ibm/git-clone.sh'
-  DBB_Build: 'ibm/dbb-build.sh'
+  DBB_Build: 'ibm/dbb-build-test.sh'
+  Prepare_Logs: 'ibm/prepare-logs.sh'       # Script to gather build log files into a single archive file
 
 # "on" trigger to manually start this workflow. Can add "pull, push..." for auto trigger.
 # see https://docs.github.com/en/actions/learn-github-actions/contexts
@@ -23,7 +24,7 @@ jobs:
       # Project related vars
       MyRepo: git@github.com:${{ github.repository }}.git
       MyWorkDir: tmp/ghActions/ghAction-poc-workspace_run_${{ github.run_number }}
-      MyWorkSpace: dbb-zappbuild
+      MyWorkSpace: /u/laurenl/dbb-zappbuild-gha/samples   # Absolute z/OS UNIX path to workspace (root) directory containing all required source directories
       MyBranch: ${{ github.ref }}
       MyApplication: MortgageApplication                  # Application directory name (relative to MyWorkSpace)
       MyHlq: LAURENL.ZAPP.CLEAN.MASTER                    # High level qualifier for partitioned data sets
