@@ -25,6 +25,8 @@ jobs:
       MyWorkDir: tmp/ghActions/ghAction-poc-workspace_run_${{ github.run_number }}
       MyWorkSpace: dbb-zappbuild
       MyBranch: ${{ github.ref }}
+      MyApplication: MortgageApplication                  # Application directory name (relative to MyWorkSpace)
+      MyHlq: LAURENL.ZAPP.CLEAN.MASTER                    # High level qualifier for partitioned data sets
       
     steps:
       - name: Echo
@@ -33,8 +35,11 @@ jobs:
       - name: Clone
         run: ${{ env.DBB_Host }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}
     
-      - name: DBB_Impact_Build
-        run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild
+      # - name: DBB_Impact_Build
+      #   run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild
+
+      - name: DBB_Full_Build
+        run: ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild
 
       - name: Ensure logs subdirectory exists on GHA runner  # Create new logs subdirectory (if not already existing) in GHA runner's working directory, to be used for next step.
         # Below is a PowerShell command. For bash, it can be replaced with: mkdir -p ${{ env.RunnerLogDir }}
