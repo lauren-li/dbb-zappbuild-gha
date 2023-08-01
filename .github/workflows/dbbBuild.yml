@@ -44,7 +44,9 @@ jobs:
 
       - name: Ensure logs subdirectory exists on GHA runner  # Create new logs subdirectory (if not already existing) in GHA runner's working directory, to be used for next step.
         # Below is a PowerShell command. For bash, it can be replaced with: mkdir -p ${{ env.RunnerLogDir }}
-        run: New-Item ${{ env.RunnerLogDir }} -ItemType directory -Force
+        # run: New-Item ${{ env.RunnerLogDir }} -ItemType directory -Force
+        # Bash below
+        run: mkdir -p ${{ env.RunnerLogDir }}
 
   Upload_Logs_to_GitHub:
     needs: DBB_Build_on_zOS
