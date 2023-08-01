@@ -40,7 +40,7 @@ jobs:
       #   run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ghAction-poc-app --impactBuild
 
       - name: DBB_Full_Build
-        run: ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild
+        run: ${{ env.DBB_Host }} ${{ env.DBB_Build }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyApplication }} ${{ env.MyHlq }} --fullBuild
 
       - name: Ensure logs subdirectory exists on GHA runner  # Create new logs subdirectory (if not already existing) in GHA runner's working directory, to be used for next step.
         # Below is a PowerShell command. For bash, it can be replaced with: mkdir -p ${{ env.RunnerLogDir }}
