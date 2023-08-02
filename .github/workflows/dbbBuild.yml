@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: Echo
         # run: ${{ env.DBB_Host }} ${{ env.Echo }} ${{ env.MyRepo }}
-        run: ${{ env.DBB_Host }} ${{ env.Echo }} a
+        run: ${{ env.DBB_Host }} ${{ env.Echo }}
         
       - name: Clone
         run: ${{ env.DBB_Host }} ${{ env.Clone }} ${{ env.MyRepo }} ${{ env.MyWorkDir }} ${{ env.MyWorkSpace }} ${{ env.MyBranch }}
