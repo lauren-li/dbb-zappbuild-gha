@@ -28,6 +28,7 @@ jobs:
       MyBranch: ${{ github.ref }}
       MyApplication: MortgageApplication                  # Application directory name (relative to MyWorkSpace)
       MyHlq: LAURENL.ZAPP.CLEAN.MASTER                    # High level qualifier for partitioned data sets
+      RunnerLogDir: logs                                  # Subdirectory for storing logs on GHA runner (relative to runner's working directory)
       
     steps:
       - name: Echo
